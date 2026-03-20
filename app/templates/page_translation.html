@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Translated Page {{ page_number }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 980px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      color: #222;
+    }
+    pre {
+      white-space: pre-wrap;
+      line-height: 1.45;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .empty {
+      color: #666;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h2>Document {{ document_id }} — Page {{ page_number }} — Translation ({{ lang }})</h2>
+  <p>
+    <a href="{{ original_page_url }}" target="_blank" rel="noopener noreferrer">Open original page image</a>
+    {% if uri %}
+      · <span>MT URI: <code>{{ uri }}</code></span>
+    {% endif %}
+  </p>
+
+  {% if has_translation %}
+    <pre>{{ text }}</pre>
+  {% else %}
+    <div class="empty">No translated page is available for this page/language.</div>
+  {% endif %}
+</body>
+</html>
+
+
+

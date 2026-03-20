@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Page {{ page_number }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 1rem auto;
+      max-width: 1000px;
+      text-align: center;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      margin-top: 1rem;
+    }
+    .meta {
+      margin-top: 0.5rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Document {{ document_id }} — Page {{ page_number }}</h2>
+
+  {% if image_url %}
+    <img src="{{ image_url }}" alt="Page image">
+  {% else %}
+    <p>No image available.</p>
+  {% endif %}
+
+  <div class="meta">
+    Page ID: {{ page_id }}
+  </div>
+
+</body>
+</html>
+

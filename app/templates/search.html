@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Search UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      color: #222;
+      font-size: 0.95rem;
+    }
+    h1 { margin-bottom: 0.75rem; font-size: 1.4rem; }
+    form {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      align-items: end;
+    }
+    input[type="text"], select, input[type="number"] {
+      padding: 0.45rem 0.6rem;
+      font-size: 0.95rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    label { font-size: 0.85rem; color: #444; display: block; margin-bottom: 0.2rem; }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: 1px solid #999;
+      border-radius: 4px;
+      background: #f5f5f5;
+    }
+    button:hover { background: #e8e8e8; }
+    .summary { color: #555; margin-bottom: 0.6rem; font-size: 0.9rem; }
+    .result {
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+      margin-bottom: 0.55rem;
+      background: #fafafa;
+    }
+    .meta {
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 0.25rem;
+    }
+    .meta strong { color: #333; }
+    .snippet {
+      white-space: pre-wrap;
+      line-height: 1.4;
+      margin: 0.3rem 0 0.45rem 0;
+      font-size: 0.93rem;
+    }
+    .snippet mark { background: #ffe58a; padding: 0 0.1rem; }
+    .links { font-size: 0.85rem; }
+    .links a { margin-right: 0.8rem; color: #1a6db5; }
+    .empty { color: #666; margin-top: 0.8rem; }
+    code { background: #f1f1f1; padding: 0.1rem 0.25rem; border-radius: 3px; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Document Search</h1>
+
+  <form method="get" action="/ui/search">
+    <div>
+      <label for="q">Query</label>
+      <input id="q" name="q" type="text" value="{{ q }}" placeholder="Enter search text" style="width:100%;" />
+    </div>
+    <div>
+      <label for="target">Target</label>
+      <select id="target" name="target">
+        <option value="all"            {% if target == "all"            %}selected{% endif %}>All</option>
+        <option value="original"       {% if target == "original"       %}selected{% endif %}>Original pages</option>
+        <option value="page_mt"        {% if target == "page_mt"        %}selected{% endif %}>Page translations</option>
+        <option value="block_mt"       {% if target == "block_mt"       %}selected{% endif %}>Block translations</option>
+        <option value="block_original" {% if target == "block_original" %}selected{% endif %}>Block originals</option>
+      </select>
+    </div>
+    <div>
+      <label for="limit">Limit</label>
+      <input id="limit" name="limit" type="number" min="1" max="100" value="{{ limit }}" style="width:4.5rem;" />
+    </div>
+    <div>
+      <label>&nbsp;</label>
+      <button type="submit">Search</button>
+    </div>
+  </form>
+
+  {% if q %}
+    <p class="summary"><strong>{{ results|length }}</strong> result(s) for <code>{{ q }}</code></p>
+
+    {% for r in results %}
+      <div class="result">
+        <div class="meta">
+          <strong>{{ r.source }}</strong>
+          · doc {{ r.document_id }}
+          · page {{ r.page_number }}
+          {% if r.lang %}· lang {{ r.lang }}{% endif %}
+          {% if r.block_index is defined and r.block_index is not none %}· block {{ r.block_index }}{% endif %}
+        </div>
+
+        <div class="snippet">{{ r.snippet | safe }}</div>
+
+        <div class="links">
+          <a href="{{ r.original_page_url }}" target="_blank" rel="noopener noreferrer">Original page</a>
+          <a href="{{ r.translated_page_url }}" target="_blank" rel="noopener noreferrer">Translated page</a>
+        </div>
+      </div>
+    {% endfor %}
+
+    {% if not results %}
+      <div class="empty">No results found.</div>
+    {% endif %}
+  {% else %}
+    <div class="empty">Enter a query above to search original pages and translations.</div>
+  {% endif %}
+</body>
+</html>
+
+
